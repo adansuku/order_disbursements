@@ -26,5 +26,6 @@ module App
 
     # Sidekiq
     config.active_job.queue_adapter = :sidekiq
+    config.autoload_paths += ["#{config.root}/app/jobs"]
   end
 end

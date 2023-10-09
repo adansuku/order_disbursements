@@ -55,7 +55,7 @@ class DisbursementCalculatorService
     while start_date < Date.today
       end_date = start_date.end_of_day + 6.days
 
-      orders_within_week = @merchant.orders.where(created_at: start_date..end_date)
+      orders_within_week = @merchant.orders.where(created_at: start_date..end_date, disbursement: nil)
 
       if end_date.end_of_day <= Date.today && !orders_within_week.empty?
         orders_grouped_by_week[start_date] = orders_within_week
@@ -71,6 +71,8 @@ class DisbursementCalculatorService
 
   def calculate_and_create_disbursement(date, orders)
     ActiveRecord::Base.transaction do
+      return false if orders.empty?
+
       total_order_amount = orders.sum(&:amount)
       total_commission = orders.sum(&:commission)
       disbursed_amount = total_order_amount - total_commission
@@ -86,11 +88,15 @@ class DisbursementCalculatorService
       )
 
       orders.each do |order|
-        order.update(disbursement: disbursement) unless order.disbursement
-        MonthlyDisbursementService.new(order.created_at, @merchant).perform if first_order_of_month?(order)
+        next if order.disbursement.present?
+
+        unless order.disbursement
+          order.update(disbursement: disbursement)
+          MonthlyDisbursementService.new(order.created_at, @merchant).perform if first_order_of_month?(order)
+        end
       end
 
-      disbursement.save!
+      disbursement.save
     rescue StandardError => e
       Rails.logger.error("Error during disbursement calculation: #{e.message}")
       raise ActiveRecord::Rollback
