@@ -11,6 +11,9 @@ services:
       - "3000:3000"
     depends_on:
       - db
+    environment:
+      DATABASE_URL: "mysql2://the_user:the_password@db:3306/development"
+
   db:
     image: mysql:5.7
     restart: always
@@ -24,8 +27,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   mysql_data:
