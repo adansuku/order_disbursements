@@ -44,6 +44,8 @@ services:
       - 'redis'
       - 'web'
     build: .
+    volumes:
+      - ".:/usr/src/app"
     command: bundle exec sidekiq # don't mount tmp directory
     environment:
       - REDIS_URL_SIDEKIQ=redis://redis:6379/1

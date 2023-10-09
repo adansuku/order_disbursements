@@ -9,6 +9,8 @@ RUN apt-get update -qq && \
 
 COPY Gemfile* ./
 COPY init.sql /db/
+COPY config/sidekiq.yml ./config/
+
 
 RUN bundle install
 
