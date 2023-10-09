@@ -35,6 +35,12 @@ gem 'tzinfo-data', platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+# Sidekiq
+gem 'sidekiq'
+gem 'sidekiq-cron'
+
+# Redis
+
 group :development, :test do
   gem 'debug', platforms: %i[ mri mswin mswin64 mingw x64_mingw ]
 end

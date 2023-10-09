@@ -15,9 +15,9 @@ services:
       DATABASE_URL: "mysql2://the_user:the_password@db:3306/development"
 
   db:
+    platform: linux/amd64
     image: mysql:5.7
     restart: always
-    platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: development
@@ -29,5 +29,25 @@ services:
       - mysql_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  redis:
+    platform: linux/amd64
+    image: redis:7.0
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/var/lib/redis/data
+
+  sidekiq:
+    platform: linux/amd64
+    depends_on:
+      - 'db'
+      - 'redis'
+      - 'web'
+    build: .
+    command: bundle exec sidekiq # don't mount tmp directory
+    environment:
+      - REDIS_URL_SIDEKIQ=redis://redis:6379/1
+
 volumes:
   mysql_data:
+  redis:

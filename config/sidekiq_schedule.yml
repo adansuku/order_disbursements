@@ -1,0 +1,9 @@
+WeeklyDisbursementJob:
+  cron: "0 9 * * *" # Every Day at 9:00
+  class: "WeeklyDisbursementJob"
+  queue: "default"
+
+DailyDisbursementJob:
+  cron: "0 9 * * *" # Every Day at 9:00
+  class: "DailyDisbursementJob"
+  queue: "default"
