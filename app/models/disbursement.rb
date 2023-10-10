@@ -7,7 +7,7 @@ class Disbursement < ApplicationRecord
 
   after_destroy :update_orders_disbursements
 
-  scope :by_year, ->(year) { where(disbursed_at: year.beginning_of_year..year.end_of_year) }
+  scope :by_year, ->(year) { where('extract(year from disbursed_at) = ?', year) }
 
   def self.annual_disbursement_report
     select("
