@@ -1,5 +1,5 @@
 class CreateMerchants < ActiveRecord::Migration[7.1]
-  def change
+  def up
     create_table :merchants do |t|
       t.string :reference
       t.string :email
@@ -9,5 +9,9 @@ class CreateMerchants < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :merchants
   end
 end

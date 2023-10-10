@@ -1,5 +1,5 @@
 class CreateDisbursements < ActiveRecord::Migration[7.1]
-  def change
+  def up
     create_table :disbursements do |t|
       t.string :reference
       t.date :disbursed_at
@@ -11,5 +11,9 @@ class CreateDisbursements < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :disbursements
   end
 end
