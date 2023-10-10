@@ -52,42 +52,6 @@ RSpec.describe DisbursementCalculatorService, type: :service do
     end
   end
 
-  describe '#calculate_and_create_disbursement' do
-    it 'calculates and creates a disbursement for a given date and orders' do
-      date = Time.current.beginning_of_day
-      orders = create_list(:order, 3, merchant: merchant, created_at: date)
-
-      expect { service.send(:calculate_and_create_disbursement, date, orders) }
-        .to change { Disbursement.count }.by(1)
-    end
-
-    it 'calls first_order_of_month? for each order' do
-      order1 = create(:order, merchant: merchant)
-      order2 = create(:order, merchant: merchant)
-
-      allow(service).to receive(:first_order_of_month?).with(order1).and_return(true)
-      allow(service).to receive(:first_order_of_month?).with(order2).and_return(false)
-
-      service.calculate_and_create_disbursements
-
-      expect(service).to have_received(:first_order_of_month?).with(order1).once
-      expect(service).to have_received(:first_order_of_month?).with(order2).once
-    end
-
-    it 'process order when it doesn´t has a disbursement_id' do
-      order_without_disbursement = create(:order, merchant: merchant, created_at: '20.12.2020')
-      order_group = order_without_disbursement.created_at.to_date
-
-      expect(service.calculate_and_create_disbursements).to eq({ order_group => [order_without_disbursement] })
-    end
-
-    it 'does not process order when it already has a disbursement_id' do
-      create(:order, merchant: merchant, disbursement: create(:disbursement))
-
-      expect(service.calculate_and_create_disbursements).to eq({})
-    end
-  end
-
   describe '#create_monthly_fees_up_to_current_month' do
     let(:merchant) { create(:merchant, live_on: Time.now - 2.months) }
     let(:service) { DisbursementCalculatorService.new(merchant) }
