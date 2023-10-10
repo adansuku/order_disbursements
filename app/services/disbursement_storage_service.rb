@@ -2,13 +2,12 @@ class DisbursementStorageService
   def initialize(date, orders, merchant)
     @date = date
     @orders = orders.reject { |order| order.disbursement_id.present? }
-
     @merchant = merchant
   end
 
   def calculate_and_create_disbursement
     ActiveRecord::Base.transaction do
-      return false if disbursement_exists_for_period? || @orders.empty?
+      return if disbursement_exists_for_period? || @orders.empty?
 
       disbursement = build_disbursement
       process_orders(disbursement)
@@ -69,7 +68,7 @@ class DisbursementStorageService
   def disbursement_exists_for_period?
     existing_disbursement = Disbursement.find_by(
       merchant_id: @merchant.id,
-      disbursed_at: @date.beginning_of_month..@date.end_of_month
+      disbursed_at: @date
     )
 
     !existing_disbursement.nil?
