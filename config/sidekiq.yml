@@ -1,9 +1,7 @@
-:concurrency: 5
-staging:
-  :concurrency: 10
-production:
-  :concurrency: 10
+:verbose: false
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+:concurrency: 25
 :queues:
-  - critical
   - default
-  - low
+  - ping

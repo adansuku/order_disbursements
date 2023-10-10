@@ -37,7 +37,7 @@ services:
     volumes:
       - redis:/var/lib/redis/data
 
-  sidekiq:
+  worker:
     platform: linux/amd64
     depends_on:
       - 'db'
