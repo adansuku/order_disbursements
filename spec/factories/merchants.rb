@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :merchant do
-    email { Faker::Internet.email }
+    sequence(:email) { |n| "#{n}_#{Faker::Internet.email}" }
     live_on { Time.current.beginning_of_month }
     disbursement_frequency { 'DAILY' }
     minimum_monthly_fee { 15.0 }
+    reference { Faker::Alphanumeric.alphanumeric(number: 10) }
 
     factory :merchant_with_orders do
       transient do
