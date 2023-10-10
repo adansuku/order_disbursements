@@ -2,17 +2,20 @@ class Disbursement < ApplicationRecord
   belongs_to :merchant
   has_many :orders, dependent: :nullify
 
+  validates_presence_of :reference, :disbursed_at, :merchant_id, :amount_disbursed, :amount_fees, :total_order_amount,
+                        :disbursement_type
+
   after_destroy :update_orders_disbursements
 
-  scope :by_year, ->(year) { where('EXTRACT(YEAR FROM disbursed_at) = ?', year) }
+  scope :by_year, ->(year) { where(disbursed_at: year.beginning_of_year..year.end_of_year) }
 
   def self.annual_disbursement_report
     select("
-      EXTRACT(YEAR FROM disbursed_at) as year,
-      COUNT(id) as number_of_disbursements,
-      SUM(amount_disbursed) as total_amount_disbursed,
-      SUM(amount_fees) as total_amount_fees
-    ")
+    EXTRACT(YEAR FROM disbursed_at) as year,
+    COUNT(id) as number_of_disbursements,
+    SUM(amount_disbursed) as total_amount_disbursed,
+    SUM(amount_fees) as total_amount_fees
+  ")
       .group(Arel.sql('EXTRACT(YEAR FROM disbursed_at)'))
       .order(Arel.sql('EXTRACT(YEAR FROM disbursed_at)'))
       .map do |data|

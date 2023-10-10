@@ -1,6 +1,11 @@
 class Order < ApplicationRecord
   belongs_to :merchant
-  belongs_to :disbursement, optional: true
+  belongs_to :disbursement, optional: true, dependent: :destroy
+
+  validates :amount, presence: true
+  validates :merchant_id, presence: true
+
+  scope :unprocessed, -> { where(disbursement: nil) }
 
   def commission
     if amount < 50

@@ -1,6 +1,10 @@
 class MonthlyFee < ApplicationRecord
   belongs_to :merchant
 
+  validates :merchant_id, presence: true
+  validates :month, presence: true
+  validates :amount, presence: true
+
   def self.monthly_disbursement_report
     select("
       EXTRACT(YEAR FROM month) as year,
