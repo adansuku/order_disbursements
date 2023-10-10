@@ -1,5 +1,6 @@
 class YearlyReportingJob < ApplicationJob
   queue_as :default
+  sidekiq_options retry: 3
 
   def perform
     Rails.logger.info 'YearlyReportingJob started'
