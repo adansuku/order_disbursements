@@ -87,11 +87,12 @@ class DisbursementCalculatorService
         disbursed_at: date
       )
 
+      # Maybe should add a batch, we have to discuss about num of orders and performance
       orders.each do |order|
         next if order.disbursement.present?
 
         unless order.disbursement
-          order.update(disbursement: disbursement)
+          order.update(disbursement: disbursement, commission_fee: order.commission)
           MonthlyDisbursementService.new(order.created_at, @merchant).perform if first_order_of_month?(order)
         end
       end
