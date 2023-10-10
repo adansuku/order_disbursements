@@ -44,7 +44,7 @@ class DisbursementCalculatorService
     end
 
     orders_grouped_by_date.each do |date, order|
-      calculate_and_create_disbursement(date, order)
+      DisbursementStorageService.new(date, order, @merchant).calculate_and_create_disbursement
     end
   end
 
@@ -65,58 +65,11 @@ class DisbursementCalculatorService
     end
 
     orders_grouped_by_week.each do |date, orders|
-      calculate_and_create_disbursement(date, orders)
+      DisbursementStorageService.new(date, orders, @merchant).calculate_and_create_disbursement
     end
-  end
-
-  def calculate_and_create_disbursement(date, orders)
-    ActiveRecord::Base.transaction do
-      return false if orders.empty?
-
-      total_order_amount = orders.sum(&:amount)
-      total_commission = orders.sum(&:commission)
-      disbursed_amount = total_order_amount - total_commission
-
-      disbursement = Disbursement.new(
-        reference: generate_unique_reference(date),
-        merchant_id: @merchant.id,
-        total_order_amount: total_order_amount,
-        amount_disbursed: disbursed_amount,
-        amount_fees: total_commission,
-        disbursement_type: @merchant.disbursement_frequency,
-        disbursed_at: date
-      )
-
-      # Maybe should add a batch, we have to discuss about num of orders and performance
-      orders.each do |order|
-        next if order.disbursement.present?
-
-        unless order.disbursement
-          order.update(disbursement: disbursement, commission_fee: order.commission)
-          MonthlyDisbursementService.new(order.created_at, @merchant).perform if first_order_of_month?(order)
-        end
-      end
-
-      disbursement.save
-    rescue StandardError => e
-      Rails.logger.error("Error during disbursement calculation: #{e.message}")
-      raise ActiveRecord::Rollback
-    end
-  end
-
-  def first_order_of_month?(order)
-    start_of_month = order.created_at.beginning_of_month
-    end_of_month = order.created_at - 1.day
-
-    orders_in_month = @merchant.orders.where('created_at >= ? AND created_at <= ?', start_of_month, end_of_month)
-    orders_in_month.empty?
   end
 
   def calculate_monthly_fee(orders)
     orders.sum(&:commission)
-  end
-
-  def generate_unique_reference(date)
-    "#{@merchant.id}-#{date.strftime('%Y%m%d')}-#{SecureRandom.hex(4)}"
   end
 end
