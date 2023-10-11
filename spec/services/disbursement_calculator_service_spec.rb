@@ -45,9 +45,9 @@ RSpec.describe DisbursementCalculatorService, type: :service do
     end
 
     it 'does not create a new monthly fee if already exists for the month' do
-      create(:monthly_fee, merchant: merchant, month: Time.current.beginning_of_month)
+      date = Date.new(2022 - 2 - 2).beginning_of_month
+      create(:monthly_fee, merchant: merchant, month: date.next_month.beginning_of_month)
 
-      date = Time.current.beginning_of_month
       expect { service.calculate_and_create_monthly_fee(date) }.not_to change(MonthlyFee, :count)
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe DisbursementCalculatorService, type: :service do
 
       allow(merchant.orders).to receive(:where).and_return([order])
       service.calculate_and_create_monthly_fee(date)
-      monthly_fee = MonthlyFee.find_by(merchant_id: merchant.id, month: date.beginning_of_month)
+      monthly_fee = MonthlyFee.find_by(merchant_id: merchant.id, month: date.next_month.beginning_of_month)
 
       # The order last month included one order with amount = 20 so amount < 50 and the commision is 1%
       # total_monthly_fee = 0,20

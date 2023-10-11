@@ -19,8 +19,8 @@ class DisbursementCalculatorService
     total_monthly_fee = calculate_monthly_fee(orders_last_month_range)
     chargeable_amount = [@merchant.minimum_monthly_fee - total_monthly_fee, 0].max
 
-    monthly_fee = MonthlyFee.find_or_create_by(merchant: @merchant, month: date.beginning_of_month)
-    monthly_fee.update(amount: chargeable_amount)
+    monthly_fee = MonthlyFee.find_or_create_by(merchant: @merchant, month: date.next_month.beginning_of_month,
+                                               amount: chargeable_amount)
   end
 
   def create_monthly_fees_up_to_current_month
@@ -43,8 +43,8 @@ class DisbursementCalculatorService
       order.created_at.to_date
     end
 
-    orders_grouped_by_date.each do |date, _order|
-      create_disbursement_and_process_orders(date, orders, @merchant)
+    orders_grouped_by_date.each do |date, order|
+      create_disbursement_and_process_orders(date, order)
     end
   end
 
@@ -66,12 +66,12 @@ class DisbursementCalculatorService
     end
 
     orders_grouped_by_week.each do |date, orders|
-      create_disbursement_and_process_orders(date, orders, @merchant)
+      create_disbursement_and_process_orders(date, orders)
     end
   end
 
-  def create_disbursement_and_process_orders(week_start, orders)
-    DisbursementStorageService.new(week_start, orders, @merchant).calculate_and_create_disbursement
+  def create_disbursement_and_process_orders(date, orders)
+    DisbursementStorageService.new(date, orders, @merchant).calculate_and_create_disbursement
   end
 
   def calculate_monthly_fee(orders)

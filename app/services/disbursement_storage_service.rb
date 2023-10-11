@@ -43,7 +43,7 @@ class DisbursementStorageService
       next if order.disbursement
 
       order.update(disbursement: disbursement, commission_fee: order.commission)
-      MonthlyDisbursementService.new(order.created_at, @merchant).perform if order.first_order_of_month?
+      MonthlyFeeService.new(@merchant, order.created_at).perform if order.first_order_of_month?
     end
   end
 
@@ -54,6 +54,10 @@ class DisbursementStorageService
   def generate_unique_reference
     "#{@merchant.id}-#{@date.strftime('%Y%m%d')}-#{SecureRandom.hex(4)}"
   end
+
+  # Checks if a disbursement already exists for the specified merchant and date before starting the calculation.
+  # There is a validation in the model before saving but this pre-processing validation helps improve performance
+  # by avoiding unnecessary disbursement process
 
   def disbursement_exists_for_period?
     existing_disbursement = Disbursement.find_by(

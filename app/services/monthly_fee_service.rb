@@ -1,5 +1,5 @@
-class MonthlyDisbursementService
-  def initialize(date = nil, merchant = nil)
+class MonthlyFeeService
+  def initialize(merchant = nil, date = nil)
     @date = date
     @merchant = merchant
   end
