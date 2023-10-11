@@ -5,6 +5,10 @@ class MonthlyFee < ApplicationRecord
   validates :month, presence: true
   validates :amount, presence: true
 
+  validates :month,
+            uniqueness: { scope: :merchant_id,
+                          message: 'The Montly fee exists for this Merchant' }
+
   def self.monthly_disbursement_report
     select("
       EXTRACT(YEAR FROM month) as year,

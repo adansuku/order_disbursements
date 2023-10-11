@@ -5,6 +5,8 @@ class Disbursement < ApplicationRecord
   validates_presence_of :reference, :disbursed_at, :merchant_id, :amount_disbursed, :amount_fees, :total_order_amount,
                         :disbursement_type
 
+  validate :unique_disbursement_for_merchant_and_date
+
   after_destroy :update_orders_disbursements
 
   scope :by_year, ->(year) { where('extract(year from disbursed_at) = ?', year) }
@@ -31,6 +33,15 @@ class Disbursement < ApplicationRecord
   private
 
   def update_orders_disbursements
-    orders.update_all(disbursement_id: nil)
+    orders.update_all(disbursement_id: nil, commission_fee: nil)
+  end
+
+  def unique_disbursement_for_merchant_and_date
+    existing_disbursement = Disbursement.find_by(
+      merchant_id: merchant_id,
+      disbursed_at: disbursed_at
+    )
+
+    errors.add(:disbursed_at, 'already has a disbursement for this merchant and date') if existing_disbursement.present?
   end
 end
