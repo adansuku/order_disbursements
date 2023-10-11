@@ -27,4 +27,21 @@ RSpec.describe Order, type: :model do
       end
     end
   end
+
+  describe '#first_order_of_month?' do
+    let(:merchant) { create(:merchant) }
+    let(:date) { Time.now }
+
+    it 'returns true for the first order of the month' do
+      order = create(:order, merchant: merchant, created_at: date.beginning_of_month)
+      expect(order.first_order_of_month?).to be true
+    end
+
+    it 'returns false for subsequent orders of the month' do
+      order = create(:order, merchant: merchant, created_at: date.end_of_month)
+      order2 = create(:order, merchant: merchant, created_at: date.beginning_of_month)
+
+      expect(order.first_order_of_month?).to be false
+    end
+  end
 end

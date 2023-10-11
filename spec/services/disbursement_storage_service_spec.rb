@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe DisbursementStorageService, type: :service do
   let(:merchant) { create(:merchant) }
   let(:date) { Date.today }
@@ -37,20 +39,7 @@ RSpec.describe DisbursementStorageService, type: :service do
       end
     end
   end
-
   describe 'private methods' do
-    describe '#first_order_of_month?' do
-      it 'returns true for the first order of the month' do
-        order = create(:order, merchant: merchant, created_at: date.beginning_of_month)
-        expect(service.send(:first_order_of_month?, order)).to be true
-      end
-
-      it 'returns false for subsequent orders of the month' do
-        order = create(:order, merchant: merchant, created_at: date.end_of_month)
-        expect(service.send(:first_order_of_month?, order)).to be false
-      end
-    end
-
     describe '#generate_unique_reference' do
       it 'generates a unique reference based on merchant id and date' do
         reference = service.send(:generate_unique_reference)

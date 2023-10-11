@@ -40,25 +40,15 @@ class DisbursementStorageService
 
   def process_orders(disbursement)
     @orders.each do |order|
-      next if order.disbursement.present?
+      next if order.disbursement
 
-      unless order.disbursement
-        order.update(disbursement: disbursement, commission_fee: order.commission)
-        MonthlyDisbursementService.new(order.created_at, @merchant).perform if first_order_of_month?(order)
-      end
+      order.update(disbursement: disbursement, commission_fee: order.commission)
+      MonthlyDisbursementService.new(order.created_at, @merchant).perform if order.first_order_of_month?
     end
   end
 
   def save_disbursement(disbursement)
     disbursement.save
-  end
-
-  def first_order_of_month?(order)
-    start_of_month = order.created_at.beginning_of_month
-    end_of_month = order.created_at - 1.day
-
-    orders_in_month = @merchant.orders.where('created_at >= ? AND created_at <= ?', start_of_month, end_of_month)
-    orders_in_month.empty?
   end
 
   def generate_unique_reference
@@ -71,6 +61,6 @@ class DisbursementStorageService
       disbursed_at: @date
     )
 
-    !existing_disbursement.nil?
+    existing_disbursement.present?
   end
 end
