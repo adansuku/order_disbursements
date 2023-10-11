@@ -25,9 +25,9 @@ RSpec.describe ReportingToolService do
       reporting_tool = ReportingToolService.new(combined_info_by_year)
 
       expected_report = <<~CSV
-        Year,Number of disbursements,Amount of order fees,Number of monthly fees charged (From minimum monthly fee),Amount of monthly fee charged (From minimum monthly fee)
-        2021,10,5000,200,5,100
-        2022,15,7500,300,8,150
+        Year,Number of disbursements,Amount disbursed to merchants,Amount of order fees,Number of monthly fees charged (From minimum monthly fee),Amount of monthly fee charged (From minimum monthly fee)
+        2021,10,5000 €,200 €,5,100 €
+        2022,15,7500 €,300 €,8,150 €
       CSV
 
       generated_report = reporting_tool.get_yearly_report

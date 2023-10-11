@@ -7,7 +7,7 @@ class ReportingToolService
 
   def get_yearly_report
     CSV.generate(headers: true) do |csv|
-      csv << ['Year', 'Number of disbursements', 'Amount of order fees',
+      csv << ['Year', 'Number of disbursements', 'Amount disbursed to merchants', 'Amount of order fees',
               'Number of monthly fees charged (From minimum monthly fee)',
               'Amount of monthly fee charged (From minimum monthly fee)']
 
@@ -15,10 +15,10 @@ class ReportingToolService
         csv << [
           data[:year],
           data[:number],
-          data[:total_amount_disbursed],
-          data[:total_amount_fees],
+          "#{data[:total_amount_disbursed]} €",
+          "#{data[:total_amount_fees]} €",
           data[:number_of_monthly_fees],
-          data[:total_amount_monthly_fees]
+          "#{data[:total_amount_monthly_fees]} €"
         ]
       end
     end
