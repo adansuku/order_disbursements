@@ -21,7 +21,7 @@ To set up and run the solution:
 > docker-compose run web bundle exec rake db:migrate
 6. Import the dummy data with a rake task
 > docker-compose run web bundle exec rake import:data
-*Take care with this import, the full import process takes at least 30m, If you prefer to test the app, change the route into the rake tast from ./db/original_data/ to ./db/dev_data/*
+*Take care with this import, the full import process takes at least 10m, If you prefer to test the app, change the route into the rake tast from ./db/original_data/ to ./db/dev_data/*
 7. After the procces, run
 > docker-compose up
 8. visit http://localhost:3000 to ensure the rails app is working
@@ -80,6 +80,18 @@ To run this entire process in the background, I schedule jobs for specific dates
 - MonthlyDisbursementJob  It is launched every month at 9:00 ("In any case, the system is intelligent, and if it detects that an order is the first of the month, it calculates the monthly fee automatically.")
 -YearlyReportingJob. It is launched every year on 1st of January
 
+** Fix Possible problems with database permissions **
+- docker-compose exec db bash
+- mysql -u root -p
+- Insert the root password
+
+> GRANT ALL PRIVILEGES ON development.* TO 'the_user'@'%';
+> GRANT ALL PRIVILEGES ON test.* TO 'the_user'@'%';
+
+> FLUSH PRIVILEGES;
+
+Alternatively, you can use the *init.sql* file stored in the root folder if you prefer.
+
 ## Technical Choices
 ### Language and Framework
 The solution is implemented using Ruby on Rails. Ruby on Rails provides a robust framework for building web applications and interacting with databases.
@@ -105,6 +117,10 @@ For handling periodic tasks, such as daily disbursements, a background job is sc
 2.  **Error Handling:** Additional error handling and logging mechanisms can be implemented to improve system resilience and provide detailed error messages in case of failures.
 3.  **Scalability:** The solution may need further optimization for scalability, especially if the dataset grows significantly. This could involve database indexing, query optimizations, and distributed processing.
 4.  **Security:** Implement security best practices, such as input validation and sanitization, to prevent potential security vulnerabilities.
+
+## Reporting tool
+This report provides a summary of all processed orders after launching the report_tool!
+[Report](https://imgur.com/a/DinE0YS)
 
 ## Conclusion
 The seQura backend coding challenge is implemented as a Ruby on Rails application, providing a foundation for automating the calculation of disbursements and commissions for merchants. The provided solution aims to meet the specified requirements; however, there are some areas that may need further optimization and refinement, pending discussion with the rest of the engineering team.
