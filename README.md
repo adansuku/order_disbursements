@@ -40,6 +40,11 @@ To set up and run the solution:
 
 ### Sidekiq
 Visit [http://localhost:3000/sidekiq](http://localhost:3000/sidekiq) to run the worker jobs. 
+
+![Report](https://i.imgur.com/qijK1bl.png)
+
+![Report](https://i.imgur.com/LniLNvw.png)
+
 There are some workers to run daily, weekly, and reporting jobs. 
 These jobs are configured to run on specific dates, but you can run them individually when needed.
 
@@ -120,7 +125,9 @@ For handling periodic tasks, such as daily disbursements, a background job is sc
 
 ## Reporting tool
 This report provides a summary of all processed orders after launching the report_tool!
-[Report](https://imgur.com/a/DinE0YS)
+--
+![Report](https://i.imgur.com/GIyhYhB.png)
+
 
 ## Conclusion
 The seQura backend coding challenge is implemented as a Ruby on Rails application, providing a foundation for automating the calculation of disbursements and commissions for merchants. The provided solution aims to meet the specified requirements; however, there are some areas that may need further optimization and refinement, pending discussion with the rest of the engineering team.
