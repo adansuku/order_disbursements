@@ -43,7 +43,7 @@ class DisbursementStorageService
       next if order.disbursement
 
       order.update(disbursement: disbursement, commission_fee: order.commission)
-      MonthlyFeeService.new(@merchant, order.created_at).perform if order.first_order_of_month?
+      MonthlyFeeService.new(@merchant, order.created_at).calculate_monthly_fee_from_date if order.first_order_of_month?
     end
   end
 
