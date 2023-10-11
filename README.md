@@ -16,27 +16,27 @@ To set up and run the solution:
 3. Run docker build 
 > `docker-compose build`
 4. Create the database
-> docker-compose run web bundle exec rake db:create
+> `docker-compose run web bundle exec rake db:create`
 5. Execute migrations
-> docker-compose run web bundle exec rake db:migrate
+> `docker-compose run web bundle exec rake db:migrate`
 6. Import the dummy data with a rake task
-> docker-compose run web bundle exec rake import:data
+> `docker-compose run web bundle exec rake import:data`
 *Take care with this import, the full import process takes at least 10m, If you prefer to test the app, change the route into the rake tast from ./db/original_data/ to ./db/dev_data/*
 7. After the procces, run
-> docker-compose up
+> `docker-compose up`
 8. visit http://localhost:3000 to ensure the rails app is working
 
 ### Some docker basic commands 
 - How to login into the shell
-> docker-compose run web bash
+> `docker-compose run web bash`
 - How to login into the ruby console
-> docker-compose run web bundle exec rails c
+> `docker-compose run web bundle exec rails c`
 - How to run an independant instance of sidekiq
-> docker-compose run worker bundle exec sidekiq -e development -C config/sidekiq.yml
+> `docker-compose run worker bundle exec sidekiq -e development -C config/sidekiq.yml`
 - How to runt the rspec suite tests
-> docker-compose run web bundle exec rspec
+> `docker-compose run web bundle exec rspec`
 - How to run services from the console
-> docker-compose run web bundle exec rails c
+> `docker-compose run web bundle exec rails c`
 
 ### Sidekiq
 Visit [http://localhost:3000/sidekiq](http://localhost:3000/sidekiq) to run the worker jobs. 
@@ -56,28 +56,28 @@ In the MonthlyDisbursementService there are 3 methods
 3. Calculate all months for an specific merchant
 
 - Run a service from Rails console
-> docker-compose run web bundle exec rails c
+> `docker-compose run web bundle exec rails c`
 
 - Daily Disbursement for All merchants
-> DailyDisbursementService.new.perform 
+> `DailyDisbursementService.new.perform`
 
 - Weekly Disbursement for All merchants
-> WeeklyDisbursementService.new.perform 
+> `WeeklyDisbursementService.new.perform` 
 
 - Single merchant daily and weekly (Single merchant with disbursement type determined by the database, supporting both daily and weekly disbursements)
-> DisbursementCalculatorService.new(Merchant).calculate_and_create_disbursements
+> `DisbursementCalculatorService.new(Merchant).calculate_and_create_disbursements`
 
 - Run last monthly fee for a especific merchant
-> MonthlyDisbursementService.new(date, merchant)
+> `MonthlyDisbursementService.new(date, merchant)`
 
 - Run All months fee from live_on to today for a especific merchant
-> MonthlyDisbursementService.new(merchant).all_months
+> `MonthlyDisbursementService.new(merchant).all_months`
 
 - Run All months fee from live_on date to today to all merchants
-> MonthlyDisbursementService.new.all_months_all_merchants
+> `MonthlyDisbursementService.new.all_months_all_merchants`
 
 - Run Yearly Export Manually
-> YearlyExportService.new.yearly_data
+> `YearlyExportService.new.yearly_data`
 
 To run this entire process in the background, I schedule jobs for specific dates and times.
 - DailyDisbursementJob. It is launched every morning at 9:00
@@ -90,10 +90,9 @@ To run this entire process in the background, I schedule jobs for specific dates
 - mysql -u root -p
 - Insert the root password
 
-> GRANT ALL PRIVILEGES ON development.* TO 'the_user'@'%';
-> GRANT ALL PRIVILEGES ON test.* TO 'the_user'@'%';
-
-> FLUSH PRIVILEGES;
+> `GRANT ALL PRIVILEGES ON development.* TO 'the_user'@'%';`
+> `GRANT ALL PRIVILEGES ON test.* TO 'the_user'@'%';`
+> `FLUSH PRIVILEGES;`
 
 Alternatively, you can use the *init.sql* file stored in the root folder if you prefer.
 
