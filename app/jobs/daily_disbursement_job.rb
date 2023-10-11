@@ -4,7 +4,6 @@ class DailyDisbursementJob < ApplicationJob
 
   def perform
     Rails.logger.info 'DailyDisbursementJob started'
-
     DailyDisbursementService.new.perform
   rescue StandardError => e
     Rails.logger.error "Opps! Something was worng, error in DailyDisbursementJob: #{e.message}"

@@ -8,7 +8,7 @@ DailyDisbursementJob:
   class: "DailyDisbursementJob"
   queue: "default"
 
-YearlyReportingJob:
+YearlyExportJob:
   cron: "* * 1 1 *" # Every YEar at 01.01
-  class: "YearlyReportingJob"
+  class: "YearlyExportJob"
   queue: "default"
