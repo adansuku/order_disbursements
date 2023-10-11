@@ -43,8 +43,8 @@ class DisbursementCalculatorService
       order.created_at.to_date
     end
 
-    orders_grouped_by_date.each do |date, order|
-      DisbursementStorageService.new(date, order, @merchant).calculate_and_create_disbursement
+    orders_grouped_by_date.each do |date, _order|
+      create_disbursement_and_process_orders(date, orders, @merchant)
     end
   end
 
@@ -57,16 +57,21 @@ class DisbursementCalculatorService
 
       orders_within_week = @merchant.orders.where(created_at: start_date..end_date, disbursement: nil)
 
-      if end_date.end_of_day <= Date.today && !orders_within_week.empty?
-        orders_grouped_by_week[start_date] = orders_within_week
+      if end_date <= Date.today && !orders_within_week.empty?
+        orders_grouped_by_week[start_date] =
+          orders_within_week
       end
 
       start_date += 7.days
     end
 
     orders_grouped_by_week.each do |date, orders|
-      DisbursementStorageService.new(date, orders, @merchant).calculate_and_create_disbursement
+      create_disbursement_and_process_orders(date, orders, @merchant)
     end
+  end
+
+  def create_disbursement_and_process_orders(week_start, orders)
+    DisbursementStorageService.new(week_start, orders, @merchant).calculate_and_create_disbursement
   end
 
   def calculate_monthly_fee(orders)
