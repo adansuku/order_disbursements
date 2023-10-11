@@ -11,8 +11,6 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    environment:
-      DATABASE_URL: "mysql2://the_user:the_password@db:3306/development"
 
   db:
     platform: linux/amd64
@@ -28,6 +26,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /:/var/lib/mysql_database
 
   redis:
     platform: linux/amd64
@@ -45,7 +44,7 @@ services:
       - 'web'
     build: .
     volumes:
-      - ".:/usr/src/app"
+      - ".:/app"
     command: bundle exec sidekiq # don't mount tmp directory
     environment:
       - REDIS_URL_SIDEKIQ=redis://redis:6379/1

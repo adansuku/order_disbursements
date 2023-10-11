@@ -30,7 +30,7 @@ gem 'stimulus-rails'
 gem 'jbuilder'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
+gem 'tzinfo-data', platforms: %i[mswin mswin64 mingw x64_mingw jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -40,12 +40,15 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 
 # Redis
+gem 'redis', '>= 4.0.1'
 
 group :development, :test do
-  gem 'debug', platforms: %i[ mri mswin mswin64 mingw x64_mingw ]
+  gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
 end
 
 group :development do
+  gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]
+
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
 
@@ -61,7 +64,6 @@ group :development do
 
   # My progressbar
   gem 'ruby-progressbar'
-  gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]
 end
 
 group :test do
