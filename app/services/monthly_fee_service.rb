@@ -5,7 +5,7 @@ class MonthlyFeeService
   end
 
   def perform
-    calculate_and_create_monthly_fee(@date.to_date.beginning_of_month)
+    calculate_and_create_monthly_fee(@date)
   end
 
   def all_months
@@ -22,14 +22,17 @@ class MonthlyFeeService
   private
 
   def calculate_and_create_monthly_fee(date)
-    last_month_date = date.beginning_of_month.last_month
+    last_month_date = date.beginning_of_month
     orders_last_month_range = @merchant.orders.where(created_at: last_month_date.all_month)
 
     total_monthly_fee = calculate_monthly_fee(orders_last_month_range)
     chargeable_amount = [@merchant.minimum_monthly_fee - total_monthly_fee, 0].max
 
-    monthly_fee = MonthlyFee.find_or_create_by(merchant: @merchant, month: date.next_month.beginning_of_month,
-                                               amount: chargeable_amount)
+    monthly_fee = MonthlyFee.find_or_create_by(
+      merchant_id: @merchant.id,
+      month: date.next_month.beginning_of_month,
+      amount: chargeable_amount
+    )
   end
 
   def create_monthly_fees_up_to_current_month
