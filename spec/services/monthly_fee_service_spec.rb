@@ -10,21 +10,20 @@ RSpec.describe MonthlyFeeService do
       merchant = create(:merchant)
 
       expect_any_instance_of(MonthlyFeeService).to receive(:calculate_and_create_monthly_fee).with(date.beginning_of_month)
-      MonthlyFeeService.new(merchant, date).perform
+      MonthlyFeeService.new(merchant, date).calculate_monthly_fee_from_date
     end
   end
 
-  describe '#all_months' do
+  describe '#all_months_for_merchant' do
     it 'calls create_monthly_fees_up_to_current_month for the specified merchant' do
       merchant = create(:merchant)
 
       expect_any_instance_of(MonthlyFeeService).to receive(:create_monthly_fees_up_to_current_month)
-      MonthlyFeeService.new(merchant).all_months
+      MonthlyFeeService.new(merchant).all_months_for_merchant
     end
   end
 
   describe '#calculate_and_create_monthly_fee' do
-
     let(:merchant) { create(:merchant, minimum_monthly_fee: 10) }
     let(:order) { create(:order, merchant: merchant, created_at: Time.now.last_month, amount: 20) }
 
@@ -33,7 +32,7 @@ RSpec.describe MonthlyFeeService do
       allow_any_instance_of(MonthlyFeeService).to receive(:calculate_monthly_fee).and_return(10)
 
       date = Time.current
-      MonthlyFeeService.new(merchant, date).perform
+      MonthlyFeeService.new(merchant, date).calculate_monthly_fee_from_date
 
       monthly_fee = MonthlyFee.last
       expect(monthly_fee.amount).to eq(10)
@@ -43,14 +42,16 @@ RSpec.describe MonthlyFeeService do
       date = Date.new(2022 - 2 - 2).beginning_of_month
       create(:monthly_fee, merchant: merchant, month: date.next_month.beginning_of_month)
 
-      expect { MonthlyFeeService.new(merchant, date).perform }.not_to change(MonthlyFee, :count)
+      expect do
+        MonthlyFeeService.new(merchant, date).calculate_monthly_fee_from_date
+      end.not_to change(MonthlyFee, :count)
     end
 
     it 'calculates and creates monthly fee correctly' do
       date = Time.current.beginning_of_month
 
       allow(merchant.orders).to receive(:where).and_return([order])
-      MonthlyFeeService.new(merchant, date).perform
+      MonthlyFeeService.new(merchant, date).calculate_monthly_fee_from_date
       monthly_fee = MonthlyFee.find_by(merchant_id: merchant.id, month: date.next_month.beginning_of_month)
 
       # The order last month included one order with amount = 20 so amount < 50 and the commision is 1%

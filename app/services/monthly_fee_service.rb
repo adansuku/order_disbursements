@@ -4,15 +4,15 @@ class MonthlyFeeService
     @date = date
   end
 
-  def perform
+  def calculate_monthly_fee_from_date
     calculate_and_create_monthly_fee(@date)
   end
 
-  def all_months
+  def all_months_for_merchant
     create_monthly_fees_up_to_current_month
   end
 
-  def all_months_all_merchants
+  def all_months_for_merchants
     Merchant.find_each do |merchant|
       @merchant = merchant
       create_monthly_fees_up_to_current_month
@@ -28,7 +28,7 @@ class MonthlyFeeService
     total_monthly_fee = calculate_monthly_fee(orders_last_month_range)
     chargeable_amount = [@merchant.minimum_monthly_fee - total_monthly_fee, 0].max
 
-    monthly_fee = MonthlyFee.find_or_create_by(
+    MonthlyFee.find_or_create_by(
       merchant_id: @merchant.id,
       month: date.next_month.beginning_of_month,
       amount: chargeable_amount
