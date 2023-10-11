@@ -41,16 +41,20 @@ To set up and run the solution:
 ### Sidekiq
 Visit [http://localhost:3000/sidekiq](http://localhost:3000/sidekiq) to run the worker jobs. 
 
-![Report](https://i.imgur.com/qijK1bl.png)
+![Report](https://i.imgur.com/kOejyab.png)
 
-![Report](https://i.imgur.com/LniLNvw.png)
+![Report](https://i.imgur.com/8Nd7cL8.png)
+
 
 There are some workers to run daily, weekly, and reporting jobs. 
 These jobs are configured to run on specific dates, but you can run them individually when needed.
 
-I created a new job to populate all the monthly fees from `live_on` to the last completed month from today. **MonthlyDisbursementJob**
+Created a worker to increase server speed. Be careful with :concurrency: 10; you should check your machine's performance. Ensure that the resources are tailored to the needs and the number of activated workers.
+![Workers](https://i.imgur.com/EmhVCSp.png)
 
-In the MonthlyDisbursementService there are 3 methods
+I created a new job to populate all the monthly fees from `live_on` to the last completed month from today. **MonthlyFeeJob**
+
+In the MonthlyFeeService there are 3 methods
 1. Calculate the last month fee
 2. Calculate all months from merchant.live_on till today or last month
 3. Calculate all months for an specific merchant
@@ -65,16 +69,16 @@ In the MonthlyDisbursementService there are 3 methods
 > `WeeklyDisbursementService.new.perform` 
 
 - Single merchant daily and weekly (Single merchant with disbursement type determined by the database, supporting both daily and weekly disbursements)
-> `DisbursementCalculatorService.new(Merchant).calculate_and_create_disbursements`
+> `DisbursementCalculatorService.new(Merchant).calculate_monthly_fee_from_date`
 
 - Run last monthly fee for a especific merchant
-> `MonthlyDisbursementService.new(date, merchant)`
+> `MonthlyFeeService.new(merchant, date).calculate_and_create_disbursements`
 
 - Run All months fee from live_on to today for a especific merchant
-> `MonthlyDisbursementService.new(merchant).all_months`
+> `MonthlyFeeService.new(merchant).all_months_for_merchant`
 
 - Run All months fee from live_on date to today to all merchants
-> `MonthlyDisbursementService.new.all_months_all_merchants`
+> `MonthlyFeeService.new.all_months_for_merchants`
 
 - Run Yearly Export Manually
 > `YearlyExportService.new.yearly_data`
@@ -82,8 +86,10 @@ In the MonthlyDisbursementService there are 3 methods
 To run this entire process in the background, I schedule jobs for specific dates and times.
 - DailyDisbursementJob. It is launched every morning at 9:00
 - WeeklyDisbursementJob. It is launched every morning at 9:00
-- MonthlyDisbursementJob  It is launched every month at 9:00 ("In any case, the system is intelligent, and if it detects that an order is the first of the month, it calculates the monthly fee automatically.")
--YearlyReportingJob. It is launched every year on 1st of January
+- MonthlyFeeJob  It is launched every month at 9:00 ("In any case, the system is intelligent, and if it detects that an order is the first of the month, it calculates the monthly fee automatically.")
+- YearlyExportJob. It is launched every year on 1st of January
+
+Or you can run manually from sidekiq http://localhost:3000/sidekiq/cron [http://localhost:3000/sidekiq/cron]
 
 ** Fix Possible problems with database permissions **
 - docker-compose exec db bash
@@ -125,7 +131,7 @@ For handling periodic tasks, such as daily disbursements, a background job is sc
 ## Reporting tool
 This report provides a summary of all processed orders after launching the report_tool!
 --
-![Report](https://i.imgur.com/GIyhYhB.png)
+![Report](https://i.imgur.com/Dd68q3c.png)
 
 
 ## Conclusion
