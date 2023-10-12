@@ -30,7 +30,7 @@ RSpec.describe ReportingToolService do
         2022,15,7500 €,300 €,8,150 €
       CSV
 
-      generated_report = reporting_tool.get_yearly_report
+      generated_report = reporting_tool.perform
 
       expect(generated_report).to eq(expected_report)
     end
