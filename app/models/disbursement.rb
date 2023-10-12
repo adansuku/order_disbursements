@@ -5,7 +5,7 @@ class Disbursement < ApplicationRecord
                         :disbursement_type
 
   validate :unique_disbursement_for_merchant_and_date
-  after_destroy :update_orders_disbursements
+  before_destroy :update_orders_disbursements
 
   scope :by_year, ->(year) { where('extract(year from disbursed_at) = ?', year) }
 

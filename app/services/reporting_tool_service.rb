@@ -5,7 +5,7 @@ class ReportingToolService
     @combined_info_by_year = combined_info_by_year
   end
 
-  def get_yearly_report
+  def perform
     CSV.generate(headers: true) do |csv|
       csv << ['Year', 'Number of disbursements', 'Amount disbursed to merchants', 'Amount of order fees',
               'Number of monthly fees charged (From minimum monthly fee)',
