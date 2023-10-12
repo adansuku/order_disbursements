@@ -18,7 +18,7 @@ RSpec.describe YearlyExportService do
 
       reporting_tool_service = instance_double(ReportingToolService)
       allow(ReportingToolService).to receive(:new).and_return(reporting_tool_service)
-      allow(reporting_tool_service).to receive(:get_yearly_report).and_return(
+      allow(reporting_tool_service).to receive(:perform).and_return(
         'Year,Number,TotalAmount,TotalFees,NumberOfFees,TotalAmountMonthlyFees
 				2021,10,5000,200,5,100
 				2022,15,7500,300,8,150'

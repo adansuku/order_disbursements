@@ -20,7 +20,7 @@ class YearlyExportService
     end
 
     service = ReportingToolService.new(combined_info_by_year)
-    csv_content = service.get_yearly_report
+    csv_content = service.perform
     File.open('report.csv', 'w') { |file| file.write(csv_content) }
 
     Rails.logger.info 'Yearly data export completed successfully.'
