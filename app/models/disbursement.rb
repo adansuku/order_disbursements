@@ -1,12 +1,10 @@
 class Disbursement < ApplicationRecord
   belongs_to :merchant
-  has_many :orders, dependent: :nullify
-
+  has_many :orders
   validates_presence_of :reference, :disbursed_at, :merchant_id, :amount_disbursed, :amount_fees, :total_order_amount,
                         :disbursement_type
 
   validate :unique_disbursement_for_merchant_and_date
-
   after_destroy :update_orders_disbursements
 
   scope :by_year, ->(year) { where('extract(year from disbursed_at) = ?', year) }
