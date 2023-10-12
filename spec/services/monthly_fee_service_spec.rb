@@ -39,7 +39,7 @@ RSpec.describe MonthlyFeeService do
     end
 
     it 'does not create a new monthly fee if already exists for the month' do
-      date = Date.new(2022 - 2 - 2).beginning_of_month
+      date = Date.new(2022, 2, 2).beginning_of_month
       create(:monthly_fee, merchant: merchant, month: date.next_month.beginning_of_month)
 
       expect do
