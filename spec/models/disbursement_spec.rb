@@ -73,6 +73,7 @@ RSpec.describe Disbursement, type: :model do
       end
     end
   end
+
   describe 'class methods' do
     describe '.annual_disbursement_report' do
       it 'returns annual disbursement report data' do
@@ -87,6 +88,26 @@ RSpec.describe Disbursement, type: :model do
                                { year: 2023, number: 1, total_amount_disbursed: 50.0, total_amount_fees: 7 }
                              ])
       end
+    end
+  end
+
+  describe '#unique_disbursement_for_merchant_and_date' do
+    let(:merchant) { create(:merchant) }
+    let(:disbursed_at) { Time.now }
+
+    it 'should add an error if a disbursement already exists for the merchant and date' do
+      existing_disbursement = create(:disbursement, merchant: merchant, disbursed_at: disbursed_at)
+      disbursement = build(:disbursement, merchant: merchant, disbursed_at: disbursed_at)
+      disbursement.valid?
+
+      expect(disbursement.errors).not_to be_empty
+    end
+
+    it 'should not add an error if no disbursement exists for the merchant and date' do
+      disbursement = build(:disbursement, merchant: merchant, disbursed_at: disbursed_at)
+      disbursement.valid?
+
+      expect(disbursement.errors).to be_empty
     end
   end
 end

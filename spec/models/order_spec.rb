@@ -3,6 +3,52 @@
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
+  describe 'validations' do
+    let(:merchant) { create(:merchant) }
+    let(:disbursement) { create :disbursement }
+
+    it 'is valid with valid merchant' do
+      order = build(:order, merchant: merchant)
+      expect(order).to be_valid
+    end
+
+    it 'is not valid without merchant_id' do
+      order = build(:order, merchant: nil)
+      expect(order).not_to be_valid
+    end
+
+    it 'is not valid without amount' do
+      order = build(:order, merchant: merchant, amount: nil)
+      expect(order).not_to be_valid
+    end
+
+    it 'is valid without amount' do
+      order = build(:order, merchant: merchant, amount: 30)
+      expect(order).to be_valid
+    end
+
+    it 'doesn´t delete if containt a disbursement_id' do
+      order = build(:order, merchant: merchant, amount: 30, disbursement: disbursement)
+      order.destroy
+      expect(order).to be_valid
+    end
+
+    it 'delete if containt a disbursement_id' do
+      order = build(:order, merchant: merchant, amount: 30)
+      order.destroy
+      expect { order.reload }.to raise_error
+    end
+
+    it 'should delete disbursement_id and amount if the disbursed is deleeted' do
+      order = create(:order, merchant: merchant, amount: 30, disbursement: disbursement)
+      disbursement.destroy
+      order.reload
+
+      expect(order.disbursement).to be_nil
+      expect(order.commission_fee).to be_nil
+    end
+  end
+
   describe '#commission' do
     let(:merchant) { create(:merchant) }
 

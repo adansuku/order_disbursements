@@ -2,6 +2,35 @@ require 'rails_helper'
 
 RSpec.describe Merchant, type: :model do
   let!(:merchant) { create(:merchant) }
+  describe '#validations' do
+    it 'is valid with valid attributes' do
+      expect(merchant).to be_valid
+    end
+
+    it 'is not valid without an email' do
+      merchant.email = nil
+      expect(merchant).not_to be_valid
+      expect(merchant.errors[:email]).to include("can't be blank")
+    end
+
+    it 'is not valid without a disbursement_frequency' do
+      merchant.disbursement_frequency = nil
+      expect(merchant).not_to be_valid
+      expect(merchant.errors[:disbursement_frequency]).to include("can't be blank")
+    end
+
+    it 'is not valid without a minimum_monthly_fee' do
+      merchant.minimum_monthly_fee = nil
+      expect(merchant).not_to be_valid
+      expect(merchant.errors[:minimum_monthly_fee]).to include("can't be blank")
+    end
+
+    it 'is not valid without a reference' do
+      merchant.reference = nil
+      expect(merchant).not_to be_valid
+      expect(merchant.errors[:reference]).to include("can't be blank")
+    end
+  end
 
   describe '#pending_daily_orders_for_disbursement' do
     it 'returns orders that are pending for daily disbursement' do

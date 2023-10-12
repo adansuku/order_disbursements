@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ReportingToolService do
-  describe '#get_yearly_report' do
+  describe '#perform' do
     it 'generates a CSV report with the expected headers and data' do
       combined_info_by_year = {
         2021 => {
