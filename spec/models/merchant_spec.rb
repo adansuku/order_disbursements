@@ -12,6 +12,7 @@ RSpec.describe Merchant, type: :model do
       expect(merchant).not_to be_valid
       expect(merchant.errors[:email]).to include("can't be blank")
     end
+  end
 
     it 'is not valid without a disbursement_frequency' do
       merchant.disbursement_frequency = nil
