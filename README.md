@@ -1,4 +1,4 @@
-# seQura Backend Coding Challenge
+# Backend Coding Challenge
 ## Table of Contents
 1. Introduction
 2. Setup and Running the Solution
