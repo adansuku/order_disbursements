@@ -7,7 +7,7 @@
 5. Remaining Tasks
 
 ## Introduction
-This repository contains the solution to the seQura backend coding challenge. The challenge involves automating the calculation of merchants' disbursements payouts and seQura commissions for existing and new orders based on specific requirements.
+This repository contains the solution to the  backend coding challenge. The challenge involves automating the calculation of merchants' disbursements payouts and  commissions for existing and new orders based on specific requirements.
 
 ## Setup and Running the Solution
 To set up and run the solution:
@@ -135,7 +135,7 @@ This report provides a summary of all processed orders after launching the repor
 
 
 ## Conclusion
-The seQura backend coding challenge is implemented as a Ruby on Rails application, providing a foundation for automating the calculation of disbursements and commissions for merchants. The provided solution aims to meet the specified requirements; however, there are some areas that may need further optimization and refinement, pending discussion with the rest of the engineering team.
+The backend coding challenge is implemented as a Ruby on Rails application, providing a foundation for automating the calculation of disbursements and commissions for merchants. The provided solution aims to meet the specified requirements; however, there are some areas that may need further optimization and refinement, pending discussion with the rest of the engineering team.
 
 ### Remaining Optimizations
 1.  **Worker Scalability:** The current solution assumes a straightforward execution of tasks without explicit consideration for worker scalability. Depending on the size of the dataset and the frequency of tasks, it may be beneficial to explore options for optimizing worker performance and scaling the processing infrastructure.
@@ -150,7 +150,7 @@ The remaining optimizations mentioned above should be discussed and planned coll
 The solution provided here serves as a starting point and can be iteratively improved based on feedback, team discussions, and evolving project requirements.
 
 ## Personal Reflection and Request for Feedback
-I thoroughly enjoyed working on the seQura Backend Coding Challenge. Over the course of approximately 6-7 hours spread across daily 3-hour sessions, I delved into the challenges of automating the calculation of merchant payouts and seQura commissions.
+I thoroughly enjoyed working on the Backend Coding Challenge. Over the course of approximately 6-7 hours spread across daily 3-hour sessions, I delved into the challenges of automating the calculation of merchant payouts and  commissions.
 
 While I am satisfied with the outcome, I acknowledge there are areas for improvement, especially in terms of performance and more comprehensive testing. In hindsight, I realize there are opportunities to optimize system performance and strengthen the test suite to address edge cases and special scenarios.
 
